@@ -37,15 +37,16 @@ app.listen(8080, () => {
       console.log('server listening on port 8080')
 })
 
+/*
 app.get('/users', db.getUsers)
 app.get('/users/:id', db.getUserById)
 app.post('/users', db.createUser)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 
+*/
+
 /*
-
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
