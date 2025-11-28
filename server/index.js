@@ -1,4 +1,5 @@
 require('dotenv').config();
+require("reflect-metadata");
 
 const express = require('express');
 const app = express();
@@ -6,8 +7,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const cookieParser = require('cookie-parser');
-
-const db = require('./queries');
 
 const { router: authRoutes } = require('./routes/auth.js');
 
@@ -19,11 +18,13 @@ app.use(
   })
 )
 
-// other
+// only allow requests from our client in localhost:3000
 app.use(cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
     credentials: true
 }));
+
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -57,8 +58,10 @@ CREATE TABLE lists (
     todo_id SERIAL PRIMARY KEY,
     username VARCHAR(50) REFERENCES users(username) ON DELETE CASCADE,
     content VARCHAR(500) NOT NULL,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_completed TIMESTAMP DEFAULT NULL,
     completed BOOLEAN DEFAULT FALSE
+
 );
 
 remember to add:

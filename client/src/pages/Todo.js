@@ -12,7 +12,7 @@ const Todo = ({user, error}) => {
   if (!user) return;
   const fetchList = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/auth/list?username=${user.username}`);
+      const res = await axios.get(`http://localhost:8080/api/auth/list`);
       setList(res.data.list);
     } catch (err) {
       setList([]);
@@ -24,7 +24,7 @@ const Todo = ({user, error}) => {
 
     const addTodo = async () => {
         if (!user) return;
-        const res = await axios.post("http://localhost:8080/api/auth/add_todo", {username: user.username, content: content});
+        const res = await axios.post("http://localhost:8080/api/auth/add_todo", {content: content}, { withCredentials: true });
         console.log('RESPONSE DATA:', res.data);
 
         setContent("");
@@ -32,14 +32,19 @@ const Todo = ({user, error}) => {
     };
 
     const deleteTodo = async (todo_id) => {
-        if (!user) return;
-        await axios.post("http://localhost:8080/api/auth/delete_todo", {username: user.username, todo_id: todo_id});
-        setList(prev => prev.filter(item => item.todo_id !== todo_id));
-    };
+  if (!user) return;
+
+  const confirmed = window.confirm("Are you sure you want to delete this todo?");
+  if (!confirmed) return;
+
+  await axios.post("http://localhost:8080/api/auth/delete_todo", { todo_id });
+  setList(prev => prev.filter(item => item.todo_id !== todo_id));
+};
+
 
     const toggleComplete = async (todo_id, completed) => {
        if (!user) return;
-        await axios.post("http://localhost:8080/api/auth/toggle_todo", {username: user.username, todo_id: todo_id, completed: completed});
+        await axios.post("http://localhost:8080/api/auth/toggle_todo", {todo_id: todo_id, completed: completed});
        setList(prev =>
         prev.map(item =>
             item.todo_id === todo_id
@@ -82,20 +87,26 @@ const Todo = ({user, error}) => {
 
           <ul className="space-y-2">
             {list.map((item) => {
-              const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+              const formattedDateCreated = new Date(item.date_created).toLocaleDateString('en-US', {
                 weekday: 'short',
                 day: 'numeric',
                 month: 'short',
               });
 
+              const formattedDateCompleted = item.date_completed ? new Date(item.date_completed).toLocaleDateString('en-US', {
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short',
+              }) : null;
+
               return (
                 <li
                   key={item.todo_id}
-                  className="flex justify-between items-center p-3 bg-white border rounded shadow-sm text-black group hover:bg-gray-50 transition"
+                  className="flex justify-between items-center p-3 bg-white border rounded shadow-sm text-black hover:bg-gray-50 transition"
                 >
                   <span
                     onClick={() => toggleComplete(item.todo_id, !item.completed)}
-                    className="flex items-center space-x-2 cursor-pointer"
+                    className="group flex items-center space-x-2 cursor-pointer"
                   >
                     <span className="transition-transform duration-150">
                       {!item.completed ? (
@@ -111,7 +122,9 @@ const Todo = ({user, error}) => {
                     </span>
                   </span>
 
-                  <span className="text-slate-500 text-sm">{formattedDate}</span>
+                  <span className="text-slate-500 text-xs">Created: {formattedDateCreated}</span>
+                  {item.completed && (<span className="text-slate-500 text-xs">Completed: {formattedDateCompleted}</span>
+                  )}
 
                   <button
                     onClick={() => deleteTodo(item.todo_id)}

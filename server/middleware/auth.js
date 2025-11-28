@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const db = require('../config/db.js');
-const pool = db.pool;
+const AppDataSource = require('../config/new_db.js');
+const User = require('../entities/Users.js');
 
 const protect = async (req, res, next) => {
   try {
@@ -12,13 +12,13 @@ const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await pool.query("SELECT id, username FROM users WHERE id = $1", [decoded.id]);
+    const user = await AppDataSource.getRepository(User).findOneBy({ id: decoded.id });
 
-    if (user.rows.length === 0) {
+    if (!user) {
         return res.status(401).json({ message: "Not authorized, user not found"});
     }
 
-    req.user = user.rows[0]
+    req.user = user
     next();
 
 

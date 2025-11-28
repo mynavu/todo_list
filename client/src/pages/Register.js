@@ -16,7 +16,7 @@ const Register = ({ setUser }) => {
             setUser(res.data.user);
             navigate("/");
         } catch (err) {
-            setError("Registration failed");
+            setError(err.response?.data?.message || "Registration failed");
         }
     }
 

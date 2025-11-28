@@ -16,7 +16,7 @@ const Login = ({ setUser }) => {
             console.log(res.data.user);
             navigate("/");
         } catch (err) {
-            setError("Inavlid email or password");
+            setError("Inavlid username or password");
         }
     }
 
