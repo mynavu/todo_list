@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 require("reflect-metadata");
 
 const express = require('express');
@@ -9,6 +10,16 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const { router: authRoutes } = require('./routes/auth.js');
+const { router: todoRoutes } = require('./routes/todo.js');
+
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger.js");
+
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 
 // pgsql
 app.use(bodyParser.json())
@@ -33,6 +44,8 @@ app.get('/', (req, res) => {
 })
 
 app.use("/api/auth", authRoutes);
+app.use("/api/todo", todoRoutes);
+
 
 app.listen(8080, () => {
       console.log('server listening on port 8080')

@@ -24,4 +24,10 @@ module.exports = new EntitySchema({
       nullable: false,
     },
   },
+  indices: [
+    {
+      name: "USERS_USERNAME_INDEX",
+      columns: ["username"],
+    },
+  ],
 });

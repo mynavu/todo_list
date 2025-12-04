@@ -12,7 +12,7 @@ const Todo = ({user, error}) => {
   if (!user) return;
   const fetchList = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/auth/list`);
+      const res = await axios.get(`http://localhost:8080/api/todo/list`);
       setList(res.data.list);
     } catch (err) {
       setList([]);
@@ -24,7 +24,7 @@ const Todo = ({user, error}) => {
 
     const addTodo = async () => {
         if (!user) return;
-        const res = await axios.post("http://localhost:8080/api/auth/add_todo", {content: content}, { withCredentials: true });
+        const res = await axios.post("http://localhost:8080/api/todo/add_todo", {content: content}, { withCredentials: true });
         console.log('RESPONSE DATA:', res.data);
 
         setContent("");
@@ -37,22 +37,29 @@ const Todo = ({user, error}) => {
   const confirmed = window.confirm("Are you sure you want to delete this todo?");
   if (!confirmed) return;
 
-  await axios.post("http://localhost:8080/api/auth/delete_todo", { todo_id });
+  await axios.post("http://localhost:8080/api/todo/delete_todo", { todo_id });
   setList(prev => prev.filter(item => item.todo_id !== todo_id));
 };
 
 
     const toggleComplete = async (todo_id, completed) => {
-       if (!user) return;
-        await axios.post("http://localhost:8080/api/auth/toggle_todo", {todo_id: todo_id, completed: completed});
-       setList(prev =>
+      if (!user) return;
+
+      const res = await axios.post(
+        "http://localhost:8080/api/todo/toggle_todo",
+        { todo_id, completed },
+        { withCredentials: true }
+      );
+
+      const updatedTodo = res.data.todo;
+
+      setList(prev =>
         prev.map(item =>
-            item.todo_id === todo_id
-            ? { ...item, completed: !item.completed }
-            : item
+          item.todo_id === todo_id ? updatedTodo : item
         )
-        );
-    }
+      );
+    };
+
 
 
     return (

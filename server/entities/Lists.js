@@ -52,4 +52,14 @@ module.exports = new EntitySchema({
       onDelete: "CASCADE",
     },
   },
+  indices: [
+    {
+      name: "LISTS_USERNAME_INDEX",
+      columns: ["username"],
+    },
+    {
+    name: "USERNAME_COMPLETED_INDEX",
+    columns: ["username", "completed"],
+    },
+  ],
 });
