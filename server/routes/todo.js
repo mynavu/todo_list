@@ -72,7 +72,7 @@ router.get('/list', protect, async (req, res) => {
         }
     });
 
-    res.json({ list: lists });
+    res.status(200).json({ list: lists });
 });
 
 // ADD A TO DO
@@ -95,7 +95,7 @@ router.get('/list', protect, async (req, res) => {
  *                 type: string
  *                 example: Buy groceries
  *     responses:
- *       200:
+ *       201:
  *         description: New to-do item added successfully
  *         content:
  *           application/json:
@@ -136,7 +136,7 @@ router.post('/add_todo', protect, async (req, res) => {
 
     await listRepo.save(todo);
 
-    res.json({ new_row: todo });
+    res.status(201).json({ new_row: todo });
 })
 
 
@@ -184,7 +184,7 @@ router.post('/delete_todo', protect, async (req, res) => {
         todo_id: req.body.todo_id
     });
 
-    res.json({ deleted: { username : req.user.username, todo_id: req.body.todo_id }});
+    res.status(200).json({ deleted: { username : req.user.username, todo_id: req.body.todo_id }});
 });
 
 // TOGGLE todo
@@ -222,6 +222,8 @@ router.post('/delete_todo', protect, async (req, res) => {
  *                   type: string
  *                   format: date-time
  *                   example: 2024-01-02T12:00:00Z
+ *       404:
+ *         description: To-do item not found
  */
 
 router.post('/toggle_todo', protect, async (req, res) => {
@@ -246,7 +248,7 @@ router.post('/toggle_todo', protect, async (req, res) => {
     }
     await listRepo.save(todo);
 
-    res.json({ todo });
+    res.status(200).json({ todo });
 
 });
 

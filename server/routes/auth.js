@@ -149,7 +149,7 @@ router.post('/login', async (req, res) => {
     const token = generateToken(user.id);
     res.cookie('token', token, cookieOptions);
 
-    res.json({ user: { id: user.id, username: user.username }});
+    res.status(200).json({ user: { id: user.id, username: user.username }});
 
 })
 
@@ -179,11 +179,9 @@ router.post('/login', async (req, res) => {
  *                     username:
  *                       type: string
  *                       example: test
- *       401:
- *         description: Not authorized, token failed
  */
 router.get('/me', protect, async (req, res) => {
-    res.json({ user: req.user });
+    res.status(200).json({ user: req.user });
 
     // returns info of the logged in user from middleware
 })
@@ -201,7 +199,7 @@ router.get('/me', protect, async (req, res) => {
  */
 router.post('/logout', (req, res) => {
     res.cookie('token', '', {...cookieOptions, maxAge: 1});
-    res.json({ message: 'Logged out successfully'}); 
+    res.status(200).json({ message: 'Logged out successfully'}); 
 })
 
 
@@ -236,7 +234,7 @@ router.get('/all_users', protect, async (req, res) => {
 
     const users_list = await userRepo.find();
 
-    res.json({ users_list });
+    res.status(200).json({ users_list });
 });
 
 module.exports = {

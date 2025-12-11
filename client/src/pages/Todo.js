@@ -24,6 +24,7 @@ const Todo = ({user, error}) => {
 
     const addTodo = async () => {
         if (!user) return;
+        if (content.trim() === "") return;
         const res = await axios.post("http://localhost:8080/api/todo/add_todo", {content: content}, { withCredentials: true });
         console.log('RESPONSE DATA:', res.data);
 

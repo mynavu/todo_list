@@ -9,10 +9,10 @@ const AppDataSource = new DataSource({
   username: "me",
   password: "password",
   database: "api",
-  synchronize: true,
+  synchronize: false,
   logging: true,
   entities: [User, List],
-  migrations: [],
+  migrations: ["migrations/*.js"],
   subscribers: [],
 });
 

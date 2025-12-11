@@ -61,5 +61,9 @@ module.exports = new EntitySchema({
     name: "USERNAME_COMPLETED_INDEX",
     columns: ["username", "completed"],
     },
+    {
+      name: "USERNAME_DATECREATED_INDEX",
+      columns: ["username", "date_created"],
+    }
   ],
 });
