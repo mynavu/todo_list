@@ -4,11 +4,11 @@ import './App.css';
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar.js';
-import Home from './pages/Home.js';
-import Login from './pages/Login.js';
-import Register from './pages/Register.js';
-import Todo from './pages/Todo.js';
+import Navbar from './components/Navbar.tsx';
+import Home from './pages/Home.tsx';
+import Login from './pages/Login.tsx';
+import Register from './pages/Register.tsx';
+import Todo from './pages/Todo.tsx';
 
 axios.defaults.withCredentials = true;
 
@@ -39,7 +39,8 @@ function App() {
   }
 
   return (
-    <Router className="App">
+    <div className="App">
+      <Router>
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path='/' element={<Home user={user} error={error} />} />
@@ -53,7 +54,8 @@ function App() {
           element={user ? <Navigate to={`/${user.username}/todo`} /> : <Register setUser={setUser} />}
         />
       </Routes>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
