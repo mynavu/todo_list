@@ -10,14 +10,16 @@ import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import Todo from './pages/Todo.tsx';
 
+import { User } from './types.ts';
+
 axios.defaults.withCredentials = true;
 
 
 function App() {
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchUser = async () => {

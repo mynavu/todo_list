@@ -1,8 +1,12 @@
 import React from "react";
 import { ListCheck } from 'lucide-react';
 
+type HomeProps = {
+    user: any;
+    error: string;
+}
 
-const Home = ({user, error}) => {
+const Home = ({user, error}: HomeProps) => {
 
 
     return (

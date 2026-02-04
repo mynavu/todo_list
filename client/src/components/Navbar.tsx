@@ -3,12 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LogIn, UserRoundPlus } from 'lucide-react';
 
+import { User } from '../types.ts';
 
-const Navbar = ({user, setUser}) => {
+type NavbarProps = {
+    user: User | null;
+    setUser: (user: User | null) => void;
+}
+
+const Navbar = ({user, setUser}: NavbarProps) => {
 
     const navigate = useNavigate();
     
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         await axios.post("http://localhost:8080/api/auth/logout");
         setUser(null);
         navigate('/');

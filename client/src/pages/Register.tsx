@@ -1,18 +1,31 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { User } from '../types.ts';
 
+type RegisterProps = {
+    setUser: (user: User) => void;
+}
 
-const Register = ({ setUser }) => {
-    const [form, setForm] = useState({username: "", password: ""});
-    const [error, setError] = useState("");
+type RegisterForm = {
+    username: string;
+    password: string;
+}
+
+type RegisterResponse = {
+    user: User;
+}
+
+const Register = ({ setUser }: RegisterProps) => {
+    const [form, setForm] = useState<RegisterForm>({username: "", password: ""});
+    const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e): Promise<void> => {
         e.preventDefault();
         console.log(form);
         try {
-            const res = await axios.post("http://localhost:8080/api/auth/register", form);
+            const res = await axios.post<RegisterResponse>("http://localhost:8080/api/auth/register", form);
             setUser(res.data.user);
             navigate("/");
         } catch (err) {

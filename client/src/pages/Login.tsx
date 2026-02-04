@@ -1,13 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { User } from '../types.ts';
 
-const Login = ({ setUser }) => {
-    const [form, setForm] = useState({username: "", password: ""});
-    const [error, setError] = useState("");
+type LoginProps = {
+    setUser: (user: User) => void;
+}
+
+type LoginForm = {
+    username: string;
+    password: string;
+}
+
+const Login = ({ setUser }: LoginProps) => {
+    const [form, setForm] = useState<LoginForm>({username: "", password: ""});
+    const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e): Promise<void> => {
         e.preventDefault();
         console.log(form);
         try {

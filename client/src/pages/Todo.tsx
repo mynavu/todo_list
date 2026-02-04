@@ -2,51 +2,87 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Trash, Square, SquareCheckBig } from "lucide-react";
+import { User } from '../types.ts';
 
-const Todo = ({user, error}) => {
 
-    const [content, setContent] = useState("");
-    const [list, setList] = useState([]);
+type Item = {
+    todo_id: number;
+    content: string;
+    completed: boolean;
+    date_created: string;
+    date_completed: string | null;
+}
+
+type TodoListResponse = {
+    list: Item[];
+}
+
+type TodoProps = {
+    user: User | null;
+    error: string;
+}
+
+type TodoResponse = {
+    new_row: Item;
+}
+
+type TodoToggleResponse = {
+    todo: Item;
+}
+
+const Todo = ({user, error}:TodoProps) => {
+
+    const [content, setContent] = useState<string>("");
+    const [list, setList] = useState<Item[]>([]);
 
     useEffect(() => {
-  if (!user) return;
-  const fetchList = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8080/api/todo/list`);
-      setList(res.data.list);
-    } catch (err) {
-      setList([]);
-    }
-  };
-    fetchList();
-    }, [user]);
+      if (!user) return;
+      const fetchList = async (): Promise<void> => {
+        try {
+          const res = await axios.get<TodoListResponse>(`http://localhost:8080/api/todo/list`, { withCredentials: true });
+          setList(res.data.list);
+        } catch (err) {
+          setList([]);
+        }
+      };
+        fetchList();
+        }, [user]);
 
 
-    const addTodo = async () => {
+    const addTodo = async (): Promise<void> => {
         if (!user) return;
         if (content.trim() === "") return;
-        const res = await axios.post("http://localhost:8080/api/todo/add_todo", {content: content}, { withCredentials: true });
-        console.log('RESPONSE DATA:', res.data);
+        try {
+          const res = await axios.post<TodoResponse>("http://localhost:8080/api/todo/add_todo", {content: content}, { withCredentials: true });
+          console.log('RESPONSE DATA:', res.data);
 
-        setContent("");
-        setList([...list, res.data.new_row])
+          setContent("");
+          setList([...list, res.data.new_row])
+        } catch (err) {
+          console.error("Error adding todo:", err);
+        }
     };
 
-    const deleteTodo = async (todo_id) => {
-  if (!user) return;
+    const deleteTodo = async (todo_id: number): Promise<void> => {
+      if (!user) return;
+      try {
+      const confirmed = window.confirm("Are you sure you want to delete this todo?");
+      if (!confirmed) return;
 
-  const confirmed = window.confirm("Are you sure you want to delete this todo?");
-  if (!confirmed) return;
-
-  await axios.post("http://localhost:8080/api/todo/delete_todo", { todo_id });
-  setList(prev => prev.filter(item => item.todo_id !== todo_id));
+      await axios.post("http://localhost:8080/api/todo/delete_todo", { todo_id });
+      setList(prev => prev.filter(item => item.todo_id !== todo_id));
+      } catch (err) {
+        console.error("Error deleting todo:", err);
+      }
 };
 
 
-    const toggleComplete = async (todo_id, completed) => {
+    const toggleComplete = async (todo_id: number, completed: boolean): Promise<void> => {
       if (!user) return;
 
-      const res = await axios.post(
+      try {
+
+      const res = await axios.post<TodoToggleResponse>(
         "http://localhost:8080/api/todo/toggle_todo",
         { todo_id, completed },
         { withCredentials: true }
@@ -59,6 +95,9 @@ const Todo = ({user, error}) => {
           item.todo_id === todo_id ? updatedTodo : item
         )
       );
+    } catch (err) {
+      console.error("Error toggling todo:", err);
+    }
     };
 
 
