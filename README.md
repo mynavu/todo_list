@@ -10,9 +10,11 @@ Minimalistic task tracker for activities and events with completion and starring
 - Express.js
 
 ## Project Structure
+```
 demoapp/
 ├── server/ # Backend (Express + TypeORM)
 └── client/ # Frontend (React + TypeScript)
+```
 
 ## Installation
 Clone the repository and start the backend:
